@@ -12,9 +12,9 @@ bot = telebot.TeleBot(API_KEY)
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\n \nThis bot can download YouTube Videos, Audio for '
-                          'YouTube Videos, YouTube Shorts, Instagram Reels, Audio for Instagram Reels.\nYou just have '
-                          'to select the desired format and provide a valid link.\n \n'
+    bot.reply_to(message, 'This bot is created by IgNxFireStorm.\n \nThis bot can download audio and video for any'
+                          ' Youtube Video, Youtube Short or Instagram Reel.\n'
+                          'You just have to select the desired format and provide a valid link.\n \n'
                           'Use /help command to get instructions on how to use this bot')
     print('start')
 
@@ -35,9 +35,8 @@ def help_query(message):
 
 @bot.message_handler(commands=['info'])
 def start(message):
-    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\n \nThis bot can download YouTube Videos, Audio for '
-                          'YouTube Videos, YouTube Shorts, Instagram Reels, Audio for Instagram Reels.\nYou just have '
-                          'to select the desired format and provide a valid link.\n \n'
+    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\n \nThis bot can download Video and Audio for '
+                          'YouTube Videos, YouTube Shorts, Instagram Reels.\n \n'
                           'Use /help command to get instructions on how to use this bot')
     print('info')
 
@@ -45,13 +44,11 @@ def start(message):
 @bot.message_handler(commands=['video', 'audio'])
 def format_input(message):
     if message.text == '/video':
-        bot.reply_to(message, 'Now provide the url!!')
-        msg = bot.reply_to(message, 'Video is Selected!!')
+        msg = bot.reply_to(message, 'Video is Selected!!\nNow provide the url')
         print('Video is selected!!')
         bot.register_next_step_handler(msg, video_downloader)
     elif message.text == '/audio':
-        bot.reply_to(message, 'Now provide the url!!')
-        msg = bot.reply_to(message, 'Audio is Selected!!')
+        msg = bot.reply_to(message, 'Audio is Selected!!\nNow provide the url')
         print('Audio is selected!!')
         bot.register_next_step_handler(msg, audio_downloader)
 
@@ -74,12 +71,11 @@ def video_downloader(video_link):
                 try:
                     ysv_download_link = downloader_script.short_downloader(video_link.text)
                     bot.reply_to(video_link, ysv_download_link)
-
                     # Update database
-                    with open('output.txt', 'a+') as yv_output:
-                        yv_output.write(
-                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   YouTube Video - {ysv_download_link}\n')
-
+                    with open('output.txt', 'a+') as ysv_output:
+                        ysv_output.write(
+                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   Shorts Video - {video_link.text}\n'
+                            f'Download Link - {ysv_download_link}\n')
                 except Exception as y_e:
                     print(y_e)
                     bot.reply_to(video_link, 'Something went wrong!!')
@@ -94,14 +90,15 @@ def video_downloader(video_link):
                     # Update database
                     with open('output.txt', 'a+') as yv_output:
                         yv_output.write(
-                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   YouTube Video - {yv_download_link}\n')
+                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   YouTube Video - {video_link.text}\n'
+                            f'Download Link - {yv_download_link}')
 
                 except Exception as y_e:
                     print(y_e)
                     bot.reply_to(video_link, 'Something went wrong!!')
         # Instagram Reel Link
         elif '/reel/' in video_link.text:
-            print('Insta video')
+            print('Insta reel')
             bot.reply_to(video_link, 'Video is selected')
             bot.reply_to(video_link, 'Please wait while I fetch the download link for you.')
             try:
@@ -111,21 +108,8 @@ def video_downloader(video_link):
                 # Update database
                 with open('output.txt', 'a+') as iv_output:
                     iv_output.write(
-                        f'\n{time.strftime("%H:%M:%S", time.localtime())}   Reel Video - {iv_download_link}\n')
-
-            except Exception as i_e:
-                print(i_e)
-                bot.reply_to(video_link, 'Something went wrong!!')
-            bot.reply_to(video_link, 'Please wait while I fetch the download link for you.')
-            try:
-                ia_download_link = downloader_script.reel_audio_downloader(video_link.text)
-                bot.reply_to(video_link, ia_download_link)
-
-                # Update database
-                with open('output.txt', 'a+') as ia_output:
-                    ia_output.write(
-                        f'\n{time.strftime("%H:%M:%S", time.localtime())}   Reel Audio - {ia_download_link}\n')
-
+                        f'\n{time.strftime("%H:%M:%S", time.localtime())}   Instagram Reel - {video_link.text}\n'
+                        f'Download Link - {iv_download_link}')
             except Exception as i_e:
                 print(i_e)
                 bot.reply_to(video_link, 'Something went wrong!!')
@@ -149,10 +133,10 @@ def audio_downloader(video_link):
                     bot.reply_to(video_link, ysa_download_link)
 
                     # Update database
-                    with open('output.txt', 'a+') as yv_output:
-                        yv_output.write(
-                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   YouTube Short Audio - {ysa_download_link}\n')
-
+                    with open('output.txt', 'a+') as ysa_output:
+                        ysa_output.write(
+                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   Shorts Audio - {video_link.text}\n'
+                            f'Download Link - {ysa_download_link}\n')
                 except Exception as y_e:
                     print(y_e)
                     bot.reply_to(video_link, 'Something went wrong!!')
@@ -161,14 +145,13 @@ def audio_downloader(video_link):
                 bot.reply_to(video_link, 'Audio is selected!!')
                 bot.reply_to(video_link, 'Please wait while I fetch the download link for you.')
                 try:
-                    yv_download_link = downloader_script.youtube_audio_downloader(video_link.text)
-                    bot.reply_to(video_link, yv_download_link)
-
+                    ya_download_link = downloader_script.youtube_audio_downloader(video_link.text)
+                    bot.reply_to(video_link, ya_download_link)
                     # Update database
-                    with open('output.txt', 'a+') as yv_output:
-                        yv_output.write(
-                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   YouTube Audio - {yv_download_link}\n')
-
+                    with open('output.txt', 'a+') as ya_output:
+                        ya_output.write(
+                            f'\n{time.strftime("%H:%M:%S", time.localtime())}   Youtube Audio - {video_link.text}\n'
+                            f'Download Link - {ya_download_link}\n')
                 except Exception as y_e:
                     print(y_e)
                     bot.reply_to(video_link, 'Something went wrong!!')
@@ -178,14 +161,14 @@ def audio_downloader(video_link):
             bot.reply_to(video_link, 'Audio is selected')
             bot.reply_to(video_link, 'Please wait while I fetch the download link for you.')
             try:
-                iv_download_link = downloader_script.reel_audio_downloader(video_link.text)
-                bot.reply_to(video_link, iv_download_link)
+                ia_download_link = downloader_script.reel_audio_downloader(video_link.text)
+                bot.reply_to(video_link, ia_download_link)
 
                 # Update database
-                with open('output.txt', 'a+') as iv_output:
-                    iv_output.write(
-                        f'\n{time.strftime("%H:%M:%S", time.localtime())}   Reel Audio - {iv_download_link}\n')
-
+                with open('output.txt', 'a+') as ia_output:
+                    ia_output.write(
+                        f'\n{time.strftime("%H:%M:%S", time.localtime())}   Instagram Audio - {video_link.text}\n'
+                        f'Download Link - {ia_download_link}\n')
             except Exception as i_e:
                 print(i_e)
                 bot.reply_to(video_link, 'Something went wrong!!')
@@ -196,6 +179,7 @@ def audio_downloader(video_link):
         bot.reply_to(video_link, 'Please provide a valid link!!')
 
 
+# to let the bot constantly running even after getting an error
 if __name__ == '__main__':
     while True:
         try:
