@@ -12,50 +12,54 @@ bot = telebot.TeleBot(API_KEY)
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\nThis bot can download YouTube Videos, Audio for '
+    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\n \nThis bot can download YouTube Videos, Audio for '
                           'YouTube Videos, YouTube Shorts, Instagram Reels, Audio for Instagram Reels.\nYou just have '
                           'to select the desired format and provide a valid link.\n \n'
                           'Use /help command to get instructions on how to use this bot')
+    print('start')
 
 
 @bot.message_handler(commands=['help'])
 def help_query(message):
     bot.reply_to(message, 'To download YouTube Videos or YouTube Audios or Instagram reels, '
-                          'you must select your desired format.\n '
+                          'firstly, you must select your desired format and then provide the url.\n '
                           '\n'
                           'You can select format by folowing commands:-\n'
-                          '/video - Use to download in Video format\n'
-                          '/audio - Use to download in Audio format\n '
-                          '\n'
-                          '/info - You can get information about what this bot can do\n '
-                          '\n'
-                          '/help - Instructions on how to use this bot')
+                          '/video - Download in Video format.\n'
+                          '/audio - Download in Audio format.\n '
+                          '\nAdditional commands:-\n'
+                          '/info - Gives information about what this bot can do.\n '
+                          '/help - Get instructions on how to use this bot.')
+    print('help')
 
 
 @bot.message_handler(commands=['info'])
 def start(message):
-    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\nThis bot can download YouTube Videos, Audio for '
+    bot.reply_to(message, 'This bot is made by IgNxFireStorm.\n \nThis bot can download YouTube Videos, Audio for '
                           'YouTube Videos, YouTube Shorts, Instagram Reels, Audio for Instagram Reels.\nYou just have '
                           'to select the desired format and provide a valid link.\n \n'
                           'Use /help command to get instructions on how to use this bot')
+    print('info')
 
 
 @bot.message_handler(commands=['video', 'audio'])
 def format_input(message):
     if message.text == '/video':
-        print('Video is selected!!')
+        bot.reply_to(message, 'Now provide the url!!')
         msg = bot.reply_to(message, 'Video is Selected!!')
+        print('Video is selected!!')
         bot.register_next_step_handler(msg, video_downloader)
     elif message.text == '/audio':
-        print('Audio is selected!!')
+        bot.reply_to(message, 'Now provide the url!!')
         msg = bot.reply_to(message, 'Audio is Selected!!')
+        print('Audio is selected!!')
         bot.register_next_step_handler(msg, audio_downloader)
 
 
 @bot.message_handler(func=lambda anything: True)
 def select_format(message):
-    print('Select format!!')
     bot.reply_to(message, 'Please select Audio or Video first!!')
+    print('Select format!!')
 
 
 def video_downloader(video_link):
